@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getDataSource } from "@/lib/typeorm";
 import Folder from "@/entities/Folder";
+import File from "@/entities/File";
 
 export async function PUT(request, { params }) {
   try {
@@ -24,8 +25,12 @@ export async function DELETE(request, { params }) {
     const { id } = await params;
     const dataSource = await getDataSource();
     const folderRepo = dataSource.getRepository(Folder);
+    const fileRepo = dataSource.getRepository(File);
 
     const folder = await folderRepo.findOne({ where: { id: parseInt(id) } });
+    const fileCount = await fileRepo.count({
+      where: { folder: { id: folder.id } },
+    });
     if (!folder) {
       return NextResponse.json(
         { message: "Folder not found." },
@@ -36,9 +41,12 @@ export async function DELETE(request, { params }) {
     const childCount = await folderRepo.count({
       where: { parent: { id: folder.id } },
     });
-    if (childCount > 0) {
+    if (fileCount > 0 || childCount > 0) {
       return NextResponse.json(
-        { message: "Folder has subfolders and cannot be deleted." },
+        {
+          message:
+            "Folder has subfolders and file due to which it cannot be deleted.",
+        },
         { status: 400 }
       );
     }

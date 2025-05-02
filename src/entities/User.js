@@ -1,5 +1,4 @@
 import { EntitySchema } from "typeorm";
-import Folder from "./Folder.js";
 
 const User = new EntitySchema({
   name: "User",
@@ -25,6 +24,11 @@ const User = new EntitySchema({
     folders: {
       type: "one-to-many",
       target: "Folder",
+      inverseSide: "user",
+    },
+    files: {
+      type: "one-to-many",
+      target: "File",
       inverseSide: "user",
     },
   },

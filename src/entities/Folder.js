@@ -32,6 +32,11 @@ const Folder = new EntitySchema({
       joinColumn: { name: "userId" },
       inverseSide: "folders",
     },
+    files: {
+      type: "one-to-many",
+      target: "File",
+      inverseSide: "folder",
+    },
   },
 });
 

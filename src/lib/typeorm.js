@@ -1,6 +1,7 @@
 import { DataSource } from "typeorm";
 import User from "@/entities/User";
 import Folder from "@/entities/Folder";
+import File from "@/entities/File";
 
 let dataSource;
 
@@ -14,7 +15,7 @@ export async function getDataSource() {
     url: process.env.DATABASE_URL,
     synchronize: true,
     logging: false,
-    entities: [User, Folder],
+    entities: [User, Folder, File],
   });
 
   await dataSource.initialize();
