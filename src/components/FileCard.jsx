@@ -3,6 +3,9 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import ConfirmationModal from "./ConfirmationModal";
+import DeleteIcon from "@/icons/DeleteIcon";
+import FilePreviewIcon from "@/icons/FilePreviewIcon";
+import FileIcon from "@/icons/FileIcon";
 
 export default function FileCard({ file, onClick, onDelete, view = "grid" }) {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -23,7 +26,7 @@ export default function FileCard({ file, onClick, onDelete, view = "grid" }) {
     setIsDeleting(true);
     try {
       await onDelete(file.id);
-      toast.success("File deleted");
+      toast.success("File Deleted Successfully.");
     } catch (err) {
       console.error("Delete error:", err);
       toast.error(
@@ -84,35 +87,39 @@ export default function FileCard({ file, onClick, onDelete, view = "grid" }) {
   );
 
   const ActionButtons = () => (
-    <div className="mt-4 flex gap-2">
+    <div className="mt-4 flex gap-2 justify-center">
       <button
         onClick={(e) => {
           e.stopPropagation();
           setShowPreview(true);
         }}
-        className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+        className="flex gap-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-800"
       >
+        <FilePreviewIcon />
         Preview
       </button>
 
       <button
         onClick={handleDeleteClick}
-        className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+        // className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+        className="absolute top-2 right-2 text-sm text-red-500 hover:text-red-700"
       >
-        Delete
+        <DeleteIcon />
       </button>
     </div>
   );
 
   const GridView = () => (
     <div
-      className="relative border p-4 rounded bg-white dark:bg-[#121212] shadow-sm hover:shadow-md transition cursor-pointer"
+      className="relative border p-5 rounded bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-md hover:shadow-xl transition cursor-pointer"
       onClick={handleClick}
     >
-      <h3 className="text-lg font-semibold truncate text-[var(--foreground)]">
-        {file.name}
-      </h3>
-
+      <div className="flex gap-1">
+        <FileIcon className="w-8 h-8" />
+        <h3 className="text-lg font-semibold truncate text-[var(--foreground)]">
+          {file.name}
+        </h3>
+      </div>
       <ActionButtons />
 
       {showConfirm && (
@@ -130,10 +137,13 @@ export default function FileCard({ file, onClick, onDelete, view = "grid" }) {
 
   const ListView = () => (
     <li
-      className="flex flex-col sm:flex-row sm:items-center sm:justify-between border p-3 rounded bg-white dark:bg-[#121212] hover:bg-gray-100 dark:hover:bg-[#1c1c1c] transition cursor-pointer"
+      className="w-1/2 flex items-center justify-between border p-4 rounded bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-md hover:shadow-xl transition cursor-pointer"
       onClick={handleClick}
     >
-      <span className="truncate text-[var(--foreground)]">{file.name}</span>
+      <span className="flex items-center gap-2 truncate text-[var(--foreground)]">
+        <FileIcon className="w-7 h-7" />
+        {file.name}
+      </span>
 
       <div className="flex gap-2 mt-2 sm:mt-0">
         <button
@@ -141,13 +151,13 @@ export default function FileCard({ file, onClick, onDelete, view = "grid" }) {
             e.stopPropagation();
             setShowPreview(true);
           }}
-          className="px-2 py-1 text-blue-600 hover:text-blue-800 text-sm"
+          className="px-2 py-1 text-blue-500 hover:text-blue-700 text-sm hover:underline"
         >
           Preview
         </button>
         <button
           onClick={handleDeleteClick}
-          className="px-2 py-1 text-red-500 hover:text-red-700 text-sm"
+          className="px-2 py-1 text-red-500 hover:text-red-700 text-sm hover:underline"
         >
           Delete
         </button>

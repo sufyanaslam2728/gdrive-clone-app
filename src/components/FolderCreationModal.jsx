@@ -25,17 +25,17 @@ export default function FolderCreationModal({ onCreate, onClose }) {
           />
           <div className="flex justify-end gap-3 text-white font-semibold">
             <button
-              type="submit"
-              className="hover:cursor-pointer px-4 py-2 bg-blue-600 rounded hover:bg-blue-800"
-            >
-              Create
-            </button>
-            <button
               type="button"
               onClick={onClose}
               className="hover:cursor-pointer px-4 py-2 bg-gray-600 rounded hover:bg-gray-800"
             >
               Cancel
+            </button>
+            <button
+              type="submit"
+              className="hover:cursor-pointer px-4 py-2 bg-blue-600 rounded hover:bg-blue-800"
+            >
+              Create
             </button>
           </div>
         </form>

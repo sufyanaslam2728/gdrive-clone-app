@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import ConfirmationModal from "./ConfirmationModal";
+import DeleteIcon from "@/icons/DeleteIcon";
+import FolderIcon from "@/icons/FolderIcon";
 
 export default function FolderCard({
   folder,
@@ -27,7 +29,6 @@ export default function FolderCard({
     setIsDeleting(true);
     try {
       await onDelete(folder.id);
-      toast.success("Folder deleted successfully.");
     } catch (err) {
       console.error("Delete error:", err);
       toast.error(
@@ -48,18 +49,21 @@ export default function FolderCard({
 
   const GridView = () => (
     <div
-      className="relative border p-4 rounded bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-md hover:shadow-xl transition cursor-pointer"
+      className="relative border p-5 rounded bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-md hover:shadow-xl transition cursor-pointer"
       onClick={handleClick}
     >
-      <h3 className="text-lg font-semibold truncate text-[var(--foreground)]">
-        {folder.name}
-      </h3>
+      <div className="flex items-center gap-1">
+        <FolderIcon />
+        <h3 className="text-lg font-semibold truncate text-[var(--foreground)]">
+          {folder.name}
+        </h3>
+      </div>
 
       <button
         onClick={handleDeleteClick}
         className="absolute top-2 right-2 text-sm text-red-500 hover:text-red-700"
       >
-        ✖
+        <DeleteIcon />
       </button>
 
       {showConfirm && (
@@ -78,10 +82,13 @@ export default function FolderCard({
       className="w-1/2 flex items-center justify-between border p-4 rounded bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-md hover:shadow-xl transition cursor-pointer"
       onClick={handleClick}
     >
-      <span className="truncate text-[var(--foreground)]">{folder.name}</span>
+      <span className="flex gap-2 items-center truncate text-[var(--foreground)]">
+        <FolderIcon />
+        {folder.name}
+      </span>
       <button
         onClick={handleDeleteClick}
-        className="text-sm text-red-500 hover:text-red-700"
+        className="text-sm text-red-500 hover:text-red-700 hover:underline"
       >
         Delete
       </button>

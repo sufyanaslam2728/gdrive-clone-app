@@ -6,6 +6,11 @@ import FolderEditModal from "./FolderEditModal";
 import FolderCard from "./FolderCard";
 import FileUploadModal from "./FileUploadModal";
 import FileCard from "./FileCard";
+import GridViewIcon from "@/icons/GridViewIcon";
+import ListViewIcon from "@/icons/ListViewIcon";
+import AddFolderIcon from "@/icons/AddFolderIcon";
+import AddFileIcon from "@/icons/AddFileIcon";
+import EditIcon from "@/icons/EditIcon";
 
 export default function FolderListing({ userId }) {
   const [folders, setFolders] = useState([]);
@@ -103,10 +108,13 @@ export default function FolderListing({ userId }) {
         method: "DELETE",
       });
 
+      const data = await res.json();
       if (res.ok) {
         await fetchFolders();
+        toast.success("Folder deleted successfully.");
       } else {
         console.error("Failed to delete folder");
+        toast.error(data.message);
       }
     } catch (err) {
       console.error("Error deleting folder:", err);
@@ -115,7 +123,6 @@ export default function FolderListing({ userId }) {
   };
 
   const handleFileUploadSuccess = async () => {
-    console.log("File uploaded:");
     setShowFileUploadModal(false);
     toast.success("File uploaded successfully.");
     await fetchFiles();
@@ -128,7 +135,6 @@ export default function FolderListing({ userId }) {
       });
 
       if (res.ok) {
-        toast.success("File Deleted Successfully.");
         await fetchFiles();
       } else {
         console.error("Failed to delete file");
@@ -142,7 +148,7 @@ export default function FolderListing({ userId }) {
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-xl font-semibold">Your Folders</h2>
+        <h2 className="text-xl font-semibold">Your Folders & Files</h2>
         <div className="flex font-medium text-lg gap-2 text-white">
           <button
             onClick={() =>
@@ -150,33 +156,42 @@ export default function FolderListing({ userId }) {
             }
             className="px-3 py-1 bg-gray-200 rounded text-black hover:cursor-pointer hover:bg-gray-400"
           >
-            {viewMode === "grid" ? "List View" : "Grid View"}
+            {viewMode === "grid" ? (
+              <div className="flex gap-1 items-center">
+                <ListViewIcon /> List View
+              </div>
+            ) : (
+              <div className="flex gap-1 items-center">
+                <GridViewIcon /> Grid View
+              </div>
+            )}
           </button>
           {currentFolder && (
             <button
               onClick={() => setShowEditModal(true)}
-              className="hover:cursor-pointer px-3 py-1 bg-yellow-500 rounded hover:bg-yellow-600"
+              className="flex gap-1 items-center hover:cursor-pointer px-3 py-1 bg-yellow-500 rounded hover:bg-yellow-600"
             >
+              <EditIcon />
               Edit Folder Name
             </button>
           )}
           <button
             onClick={() => setShowModal(true)}
-            className="hover:cursor-pointer px-3 py-1 bg-blue-500 rounded hover:bg-blue-700"
+            className="flex gap-1 items-center hover:cursor-pointer px-3 py-1 bg-blue-500 rounded hover:bg-blue-700"
           >
-            Create Folder
+            <AddFolderIcon /> Create Folder
           </button>
           <button
             onClick={() => setShowFileUploadModal(true)}
-            className="hover:cursor-pointer px-3 py-1 bg-green-600 rounded hover:bg-green-700"
+            className="flex gap-1 items-center hover:cursor-pointer px-3 py-1 bg-green-600 rounded hover:bg-green-700"
           >
-            Upload File
+            <AddFileIcon /> Upload File
           </button>
         </div>
       </div>
 
       {folderPath.length > 0 && (
-        <div className="mb-4 flex items-center gap-2 text-gray-600">
+        <div className="mb-4 flex items-center gap-2 text-gray-400">
           <button
             onClick={handleBack}
             className="text-sm text-blue-500 hover:underline hover:cursor-pointer hover:text-blue-700"
@@ -193,12 +208,11 @@ export default function FolderListing({ userId }) {
         </div>
       )}
 
-      {folders.length === 0 ? (
+      {folders.length === 0 && files.length === 0 ? (
         <p className="text-gray-400 text-center mt-10">
           No folders/files available.
         </p>
       ) : (
-        // <div className="grid grid-cols-4 gap-4">
         <div
           className={
             viewMode === "grid"
@@ -206,7 +220,7 @@ export default function FolderListing({ userId }) {
               : "flex flex-col gap-4 items-center"
           }
         >
-          {folders.map((folder) => (
+          {folders?.map((folder) => (
             <FolderCard
               key={folder.id}
               folder={folder}
@@ -215,14 +229,7 @@ export default function FolderListing({ userId }) {
               onDelete={handleDeleteFolder}
             />
           ))}
-        </div>
-      )}
-
-      {files.length === 0 ? (
-        <p className="text-gray-500">No files in this folder.</p>
-      ) : (
-        <div className="mt-6 grid grid-cols-4 gap-4">
-          {files.map((file) => (
+          {files?.map((file) => (
             <FileCard
               key={file.id}
               file={file}

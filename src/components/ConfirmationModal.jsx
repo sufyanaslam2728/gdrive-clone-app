@@ -16,7 +16,7 @@ export default function ConfirmationModal({
         onClick={(e) => e.stopPropagation()}
       >
         <p className="text-[var(--foreground)] mb-4">
-          Are you sure you want to delete <strong>{itemName}</strong>?
+          Are you sure you want to delete <strong> "{itemName}"</strong>?
         </p>
         <div className="flex justify-end gap-2">
           <button
@@ -28,7 +28,7 @@ export default function ConfirmationModal({
           </button>
           <button
             onClick={onConfirm}
-            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+            className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-700"
             disabled={isDeleting}
           >
             {isDeleting ? "Deleting..." : "Yes, Delete"}

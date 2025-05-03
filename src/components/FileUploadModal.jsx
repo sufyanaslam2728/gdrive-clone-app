@@ -29,11 +29,9 @@ export default function FileUploadModal({
 
       const data = await res.json();
 
-      console.log("fileupload modal", res, data);
       if (res.ok) {
         await onSuccess();
         setLoading(false);
-        // onClose();
       } else {
         alert(data.error || "Failed to upload file.");
       }
@@ -53,7 +51,6 @@ export default function FileUploadModal({
             type="file"
             onChange={(e) => setFile(e.target.files[0])}
             className="border border-gray-300 rounded mb-8 w-full file:hover:cursor-pointer file:bg-gray-400 file:p-3 file:me-3"
-            // "block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
           />
           <div className="flex justify-end gap-3 text-white font-semibold">
             <button
@@ -64,7 +61,6 @@ export default function FileUploadModal({
             </button>
             <button
               type="submit"
-              // disabled={!file || loading}
               disabled={loading}
               className="hover:cursor-pointer px-4 py-2 bg-green-700 rounded hover:bg-green-800"
             >

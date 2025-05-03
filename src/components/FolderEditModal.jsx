@@ -4,7 +4,8 @@ import { useState } from "react";
 export default function FolderEditModal({ currentName, onEdit, onClose }) {
   const [newName, setNewName] = useState(currentName);
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     if (newName.trim()) {
       onEdit(newName);
     }
