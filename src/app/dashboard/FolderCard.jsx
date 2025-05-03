@@ -27,13 +27,13 @@ export default function FolderCard({
     setIsDeleting(true);
     try {
       await onDelete(folder.id);
-      toast.success("Folder deleted");
+      toast.success("Folder deleted successfully.");
     } catch (err) {
       console.error("Delete error:", err);
       toast.error(
         typeof err === "string"
           ? err
-          : err?.message || "Failed to delete folder"
+          : err?.message || "Failed to delete the folder!"
       );
     } finally {
       setIsDeleting(false);
@@ -48,7 +48,7 @@ export default function FolderCard({
 
   const GridView = () => (
     <div
-      className="relative border p-4 rounded bg-white dark:bg-[#121212] shadow-sm hover:shadow-md transition cursor-pointer"
+      className="relative border p-4 rounded bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-md hover:shadow-xl transition cursor-pointer"
       onClick={handleClick}
     >
       <h3 className="text-lg font-semibold truncate text-[var(--foreground)]">
@@ -75,7 +75,7 @@ export default function FolderCard({
 
   const ListView = () => (
     <li
-      className="flex items-center justify-between border p-3 rounded bg-white dark:bg-[#121212] hover:bg-gray-100 dark:hover:bg-[#1c1c1c] transition cursor-pointer"
+      className="w-1/2 flex items-center justify-between border p-4 rounded bg-white dark:bg-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 shadow-md hover:shadow-xl transition cursor-pointer"
       onClick={handleClick}
     >
       <span className="truncate text-[var(--foreground)]">{folder.name}</span>

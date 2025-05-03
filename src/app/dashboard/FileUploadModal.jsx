@@ -11,47 +11,66 @@ export default function FileUploadModal({
   const [loading, setLoading] = useState(false);
 
   const handleUpload = async () => {
-    if (!file) return;
-    setLoading(true);
+    try {
+      if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("userId", userId);
-    formData.append("folderId", folderId);
+      setLoading(true);
 
-    const res = await fetch("/api/files", {
-      method: "POST",
-      body: formData,
-    });
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("userId", userId);
+      formData.append("folderId", folderId);
 
-    const data = await res.json();
-    setLoading(false);
+      const res = await fetch("/api/files", {
+        method: "POST",
+        body: formData,
+      });
 
-    if (res.ok) {
-      onSuccess(data);
-      onClose();
-    } else {
-      alert(data.error || "Failed to upload file.");
+      const data = await res.json();
+
+      console.log("fileupload modal", res, data);
+      if (res.ok) {
+        await onSuccess();
+        // setLoading(false);
+        // onClose();
+      } else {
+        alert(data.error || "Failed to upload file.");
+      }
+    } catch (err) {
+      console.error("Error deleting file:", err);
+      toast.error(err);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-      <div className="bg-white p-6 rounded shadow-md w-[400px]">
-        <h2 className="text-lg mb-4">Upload File</h2>
-        <input type="file" onChange={(e) => setFile(e.target.files[0])} />
-        <div className="mt-4 flex justify-end gap-2">
-          <button onClick={onClose} className="px-3 py-1 bg-gray-200 rounded">
-            Cancel
-          </button>
-          <button
-            onClick={handleUpload}
-            disabled={!file || loading}
-            className="px-3 py-1 bg-blue-500 text-white rounded"
-          >
-            {loading ? "Uploading..." : "Upload"}
-          </button>
-        </div>
+    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
+      <div className="bg-white text-black p-10 rounded shadow-lg w-md">
+        <h2 className="text-xl mb-8">Upload File</h2>
+        <form onSubmit={handleUpload}>
+          <input
+            required
+            type="file"
+            onChange={(e) => setFile(e.target.files[0])}
+            className="border border-gray-300 rounded mb-8 w-full file:hover:cursor-pointer file:bg-gray-400 file:p-3 file:me-3"
+            // "block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+          />
+          <div className="flex justify-end gap-3 text-white font-semibold">
+            <button
+              onClick={onClose}
+              className="hover:cursor-pointer px-3 py-2 bg-gray-700 rounded hover:bg-gray-800"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              // disabled={!file || loading}
+              disabled={loading}
+              className="hover:cursor-pointer px-4 py-2 bg-green-700 rounded hover:bg-green-800"
+            >
+              {loading ? "Uploading..." : "Upload"}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

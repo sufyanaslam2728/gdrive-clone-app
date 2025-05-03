@@ -22,8 +22,8 @@ export default async function Dashboard() {
 // Header Component
 function Header({ userName }) {
   return (
-    <header className="bg-gray-800 text-white p-4 flex justify-between items-center">
-      <h1 className="text-lg">Welcome, {userName}</h1>
+    <header className="bg-gray-700 text-white p-4 flex justify-between items-center">
+      <h1 className="text-xl font-semibold">Welcome, {userName}</h1>
       <LogoutButton />
     </header>
   );

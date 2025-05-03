@@ -18,28 +18,25 @@ export default function FolderListing({ userId }) {
   const [showFileUploadModal, setShowFileUploadModal] = useState(false);
 
   useEffect(() => {
-    const fetchFolders = async () => {
-      const res = await fetch(
-        `/api/folders?userId=${userId}&parentId=${currentFolder?.id || null}`
-      );
-      const data = await res.json();
-      setFolders(data);
-    };
-
     fetchFolders();
-  }, [userId, currentFolder]);
-
-  useEffect(() => {
-    const fetchFiles = async () => {
-      const res = await fetch(
-        `/api/files?userId=${userId}&folderId=${currentFolder?.id || null}`
-      );
-      const data = await res.json();
-      setFiles(data);
-    };
-
     fetchFiles();
   }, [userId, currentFolder]);
+
+  const fetchFolders = async () => {
+    const res = await fetch(
+      `/api/folders?userId=${userId}&parentId=${currentFolder?.id || null}`
+    );
+    const data = await res.json();
+    setFolders(data);
+  };
+
+  const fetchFiles = async () => {
+    const res = await fetch(
+      `/api/files?userId=${userId}&folderId=${currentFolder?.id || null}`
+    );
+    const data = await res.json();
+    setFiles(data);
+  };
 
   const handleFolderClick = (folder) => {
     setCurrentFolder(folder);
@@ -68,12 +65,10 @@ export default function FolderListing({ userId }) {
 
     if (res.ok) {
       setShowModal(false);
-
-      const refreshed = await fetch(
-        `/api/folders?userId=${userId}&parentId=${currentFolder?.id || null}`
-      );
-      setFolders(await refreshed.json());
+      toast.success("New Folder created successfully.");
+      await fetchFolders();
     } else {
+      toast.error("Failed to create new folder!");
       console.error("Failed to create folder");
     }
   };
@@ -89,6 +84,7 @@ export default function FolderListing({ userId }) {
 
     if (res.ok) {
       setShowEditModal(false);
+      toast.success("Folder name updated successfully.");
       setCurrentFolder({ ...currentFolder, name: newName });
       setFolderPath((path) =>
         path.map((f) =>
@@ -96,26 +92,33 @@ export default function FolderListing({ userId }) {
         )
       );
     } else {
-      console.error("Failed to update folder name");
+      toast.error("Failed to update the folder name!");
+      console.error("Failed to update the folder name");
     }
   };
 
   const handleDeleteFolder = async (folderId) => {
-    const res = await fetch(`/api/folders/${folderId}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/folders/${folderId}`, {
+        method: "DELETE",
+      });
 
-    if (res.ok) {
-      setFolders(folders.filter((folder) => folder.id !== folderId));
-    } else {
-      console.error("Failed to delete folder");
+      if (res.ok) {
+        await fetchFolders();
+      } else {
+        console.error("Failed to delete folder");
+      }
+    } catch (err) {
+      console.error("Error deleting folder:", err);
+      toast.error(err);
     }
   };
 
-  const handleFileUploadSuccess = (file) => {
-    console.log("File uploaded:", file);
+  const handleFileUploadSuccess = async () => {
+    console.log("File uploaded:");
     toast.success("File uploaded successfully.");
-    setShowFileUploadModal(false);
+    await fetchFiles();
+    // setShowFileUploadModal(false);
   };
 
   const handleDeleteFile = async (fileId) => {
@@ -126,7 +129,7 @@ export default function FolderListing({ userId }) {
 
       if (res.ok) {
         toast.success("File Deleted Successfully.");
-        setFiles((prevFiles) => prevFiles.filter((file) => file.id !== fileId));
+        await fetchFiles();
       } else {
         console.error("Failed to delete file");
       }
@@ -138,34 +141,34 @@ export default function FolderListing({ userId }) {
 
   return (
     <div className="p-6">
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-8">
         <h2 className="text-xl font-semibold">Your Folders</h2>
-        <div>
+        <div className="flex font-medium text-lg gap-2 text-white">
           <button
             onClick={() =>
               setViewMode((prev) => (prev === "grid" ? "list" : "grid"))
             }
-            className="mr-2 px-3 py-1 bg-gray-200 rounded"
+            className="px-3 py-1 bg-gray-200 rounded text-black hover:cursor-pointer hover:bg-gray-400"
           >
-            Toggle View
+            {viewMode === "grid" ? "List View" : "Grid View"}
           </button>
           {currentFolder && (
             <button
               onClick={() => setShowEditModal(true)}
-              className="mr-2 px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+              className="hover:cursor-pointer px-3 py-1 bg-yellow-500 rounded hover:bg-yellow-600"
             >
               Edit Folder Name
             </button>
           )}
           <button
             onClick={() => setShowModal(true)}
-            className="mr-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="hover:cursor-pointer px-3 py-1 bg-blue-500 rounded hover:bg-blue-700"
           >
             Create Folder
           </button>
           <button
             onClick={() => setShowFileUploadModal(true)}
-            className="mr-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+            className="hover:cursor-pointer px-3 py-1 bg-green-600 rounded hover:bg-green-700"
           >
             Upload File
           </button>
@@ -176,7 +179,7 @@ export default function FolderListing({ userId }) {
         <div className="mb-4 flex items-center gap-2 text-gray-600">
           <button
             onClick={handleBack}
-            className="text-sm text-blue-500 hover:underline"
+            className="text-sm text-blue-500 hover:underline hover:cursor-pointer hover:text-blue-700"
           >
             ⬅ Back
           </button>
@@ -186,6 +189,46 @@ export default function FolderListing({ userId }) {
               {folder.name}
               {idx < folderPath.length - 1 && <span> / </span>}
             </span>
+          ))}
+        </div>
+      )}
+
+      {folders.length === 0 ? (
+        <p className="text-gray-400 text-center mt-10">
+          No folders/files available.
+        </p>
+      ) : (
+        // <div className="grid grid-cols-4 gap-4">
+        <div
+          className={
+            viewMode === "grid"
+              ? "grid grid-cols-4 gap-4"
+              : "flex flex-col gap-4 items-center"
+          }
+        >
+          {folders.map((folder) => (
+            <FolderCard
+              key={folder.id}
+              folder={folder}
+              view={viewMode}
+              onClick={handleFolderClick}
+              onDelete={handleDeleteFolder}
+            />
+          ))}
+        </div>
+      )}
+
+      {files.length === 0 ? (
+        <p className="text-gray-500">No files in this folder.</p>
+      ) : (
+        <div className="mt-6 grid grid-cols-4 gap-4">
+          {files.map((file) => (
+            <FileCard
+              key={file.id}
+              file={file}
+              onDelete={() => handleDeleteFile(file.id)}
+              view={viewMode}
+            />
           ))}
         </div>
       )}
@@ -212,37 +255,6 @@ export default function FolderListing({ userId }) {
           folderId={currentFolder?.id}
           onSuccess={handleFileUploadSuccess}
         />
-      )}
-
-      {folders.length === 0 ? (
-        <p className="text-gray-500">No folders available.</p>
-      ) : (
-        <div className="grid grid-cols-4 gap-4">
-          {folders.map((folder) => (
-            <FolderCard
-              key={folder.id}
-              folder={folder}
-              view={viewMode}
-              onClick={handleFolderClick}
-              onDelete={handleDeleteFolder}
-            />
-          ))}
-        </div>
-      )}
-
-      {files.length === 0 ? (
-        <p className="text-gray-500">No files in this folder.</p>
-      ) : (
-        <div className="mt-6 grid grid-cols-4 gap-4">
-          {files.map((file) => (
-            <FileCard
-              key={file.id}
-              file={file}
-              onDelete={() => handleDeleteFile(file.id)}
-              view={viewMode}
-            />
-          ))}
-        </div>
       )}
     </div>
   );
