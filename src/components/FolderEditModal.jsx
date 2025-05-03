@@ -3,11 +3,18 @@ import { useState } from "react";
 
 export default function FolderEditModal({ currentName, onEdit, onClose }) {
   const [newName, setNewName] = useState(currentName);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (newName.trim()) {
-      onEdit(newName);
+      try {
+        setLoading(true);
+        await onEdit(newName);
+        setLoading(false);
+      } catch (err) {
+        console.error("Folder name did not updated:", err);
+      }
     }
   };
 
@@ -35,7 +42,7 @@ export default function FolderEditModal({ currentName, onEdit, onClose }) {
               type="submit"
               className="hover:cursor-pointer px-5 py-2 bg-green-700 rounded hover:bg-green-800"
             >
-              Save
+              {loading ? "Saving..." : "Save"}
             </button>
           </div>
         </form>

@@ -4,10 +4,17 @@ import { useState } from "react";
 
 export default function FolderCreationModal({ onCreate, onClose }) {
   const [folderName, setFolderName] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onCreate(folderName);
+    try {
+      setLoading(true);
+      await onCreate(folderName);
+      setLoading(false);
+    } catch (err) {
+      console.error("Error creating folder:", err);
+    }
   };
 
   return (
@@ -35,7 +42,7 @@ export default function FolderCreationModal({ onCreate, onClose }) {
               type="submit"
               className="hover:cursor-pointer px-4 py-2 bg-blue-600 rounded hover:bg-blue-800"
             >
-              Create
+              {loading ? "Creating..." : "Create"}
             </button>
           </div>
         </form>

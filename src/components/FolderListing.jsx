@@ -45,6 +45,8 @@ export default function FolderListing({ userId }) {
 
   const handleFolderClick = (folder) => {
     setCurrentFolder(folder);
+    setFiles([]);
+    setFolders([]);
     setFolderPath((prev) => [...prev, folder]);
   };
 
@@ -52,6 +54,8 @@ export default function FolderListing({ userId }) {
     const newPath = [...folderPath];
     newPath.pop();
     setFolderPath(newPath);
+    setFiles([]);
+    setFolders([]);
     setCurrentFolder(newPath[newPath.length - 1] || null);
   };
 
