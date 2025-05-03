@@ -21,7 +21,7 @@ export default function PreviewModal({ file, onClose }) {
 
         {isImage && (
           <img
-            src={file.url}
+            src={file.url.replace(/^http:\/\//, "https://")}
             alt={file.name}
             className="max-h-[70vh] w-full object-contain rounded"
           />
