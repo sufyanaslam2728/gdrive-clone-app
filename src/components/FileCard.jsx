@@ -72,7 +72,7 @@ export default function FileCard({ file, onClick, onDelete, view = "grid" }) {
         <div className="w-full h-full">
           {isPreviewable ? (
             <iframe
-              src={file.url}
+              src={file.url.replace(/^http:\/\//, "https://")}
               title="File Preview"
               className="w-full h-full rounded border"
             />
