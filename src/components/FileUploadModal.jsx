@@ -10,7 +10,8 @@ export default function FileUploadModal({
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const handleUpload = async () => {
+  const handleUpload = async (e) => {
+    e.preventDefault();
     try {
       if (!file) return;
 
@@ -31,7 +32,7 @@ export default function FileUploadModal({
       console.log("fileupload modal", res, data);
       if (res.ok) {
         await onSuccess();
-        // setLoading(false);
+        setLoading(false);
         // onClose();
       } else {
         alert(data.error || "Failed to upload file.");

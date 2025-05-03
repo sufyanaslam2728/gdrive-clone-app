@@ -66,7 +66,7 @@ export async function POST(req) {
             resource_type: "auto",
             type: "upload",
             use_filename: true,
-            unique_filename: false,
+            unique_filename: true,
           },
           (error, result) => {
             if (error) reject(error);

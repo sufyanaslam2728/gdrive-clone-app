@@ -1,13 +1,23 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
+import { useSession } from "next-auth/react";
 
 export default function Signup() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/dashboard");
+    }
+  }, [status, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -17,8 +27,14 @@ export default function Signup() {
     });
 
     if (res.ok) router.push("/login");
-    else alert("Signup failed");
+    else toast.error("Signup failed");
   };
+
+  if (status === "loading") {
+    return <div className="text-center mt-20 text-lg">Checking session...</div>; // optional: loading UI
+  }
+
+  if (status === "authenticated") return null;
 
   return (
     <div className="w-full h-screen bg-white flex items-center">

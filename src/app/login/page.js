@@ -1,13 +1,16 @@
 "use client";
-import { signIn } from "next-auth/react";
-import { useState } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 
 export default function Login() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,8 +22,20 @@ export default function Login() {
     });
 
     if (res.ok) router.push("/dashboard");
-    else alert("Login failed");
+    else toast.error("Login failed. Invalid email and password.");
   };
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace("/dashboard");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return <div className="text-center mt-20 text-lg">Checking session...</div>;
+  }
+
+  if (status === "authenticated") return null;
 
   return (
     <div className="w-full h-screen bg-white flex items-center">

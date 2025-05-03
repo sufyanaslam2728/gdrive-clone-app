@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 export default function PreviewModal({ file, onClose }) {
   const extension = file.name.split(".").pop().toLowerCase();
   console.log("extension: ", extension);

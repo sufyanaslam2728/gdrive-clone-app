@@ -116,9 +116,9 @@ export default function FolderListing({ userId }) {
 
   const handleFileUploadSuccess = async () => {
     console.log("File uploaded:");
+    setShowFileUploadModal(false);
     toast.success("File uploaded successfully.");
     await fetchFiles();
-    // setShowFileUploadModal(false);
   };
 
   const handleDeleteFile = async (fileId) => {

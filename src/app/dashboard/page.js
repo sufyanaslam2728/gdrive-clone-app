@@ -1,30 +1,31 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import LogoutButton from "./LogoutButton";
-import { redirect } from "next/navigation";
-import FolderListing from "./FolderListing";
+"use client";
 
-export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import FolderListing from "@/components/FolderListing";
+import Header from "@/components/Header";
 
-  if (!session) {
-    redirect("/login");
+export default function Dashboard() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return <p className="text-center mt-10">Loading...</p>;
   }
+
+  if (!session) return null;
 
   return (
     <div>
       <Header userName={session.user.name} />
       <FolderListing userId={session.user.id} />
     </div>
-  );
-}
-
-// Header Component
-function Header({ userName }) {
-  return (
-    <header className="bg-gray-700 text-white p-4 flex justify-between items-center">
-      <h1 className="text-xl font-semibold">Welcome, {userName}</h1>
-      <LogoutButton />
-    </header>
   );
 }
