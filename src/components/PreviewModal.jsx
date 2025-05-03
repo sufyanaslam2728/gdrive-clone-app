@@ -2,7 +2,7 @@
 
 export default function PreviewModal({ file, onClose }) {
   const extension = file.name.split(".").pop().toLowerCase();
-  console.log("extension: ", extension);
+
   const isImage = ["jpg", "jpeg", "png", "gif", "webp", "bmp", "svg"].includes(
     extension
   );

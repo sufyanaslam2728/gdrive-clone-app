@@ -87,7 +87,7 @@ export async function POST(req) {
       user: { id: parseInt(userId) },
       resourceType: uploaded.resource_type,
     });
-    console.log("saved or not: ", saved);
+
     return NextResponse.json(
       { message: "File uploaded successfully." },
       { status: 201 }

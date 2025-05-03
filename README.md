@@ -110,7 +110,9 @@ npm run dev
 - **Cloudinary PDF Limitations**: Direct embedded previews for PDFs aren't natively supported.
 - **No recursive folder deletion**: Deletion is blocked if a folder contains files or subfolders to prevent data loss.
 
-## 📸 Screenshots
+## 📸 Screenshot
+
+> While attempting to share a PDF file uploaded to Cloudinary, I received a restriction notice indicating that PDF files cannot be shared externally. This confirms that Cloudinary does not support direct external sharing or embedding for PDF files, which limits the ability to preview or generate PDF viewers directly from Cloudinary-hosted files.
 
 ![Cloudinary Issue Screenshot](screenshot/cloudinary_issue.png)
 

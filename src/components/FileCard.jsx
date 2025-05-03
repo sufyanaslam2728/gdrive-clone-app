@@ -101,7 +101,6 @@ export default function FileCard({ file, onClick, onDelete, view = "grid" }) {
 
       <button
         onClick={handleDeleteClick}
-        // className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600"
         className="absolute top-2 right-2 text-sm text-red-500 hover:text-red-700"
       >
         <DeleteIcon />
